@@ -39,20 +39,21 @@ def post_slack_message(**kwargs):
     SLACKBOT_TOKEN = os.environ.get('SLACKBOT_TOKEN')
 
     if len(SLACK_TOKEN) == 0 and not as_slack_bot:
-        SLACK_USER_TOKEN = raw_input(
+        slack_user_token = raw_input(
             'Your Slack token is missing.\nEnter your Slack token: ')
         print(
             '\nYou can also set the SLACK_TOKEN environment variable.')
+    elif len(SLACK_TOKEN) > 0 and not as_slack_bot:
+        slack_user_token = SLACK_TOKEN
     elif as_slack_bot and len(SLACKBOT_TOKEN) == 0:
         print('You are required to set the SLACKBOT_TOKEN environment variable.')
     elif as_slack_bot and len(SLACKBOT_TOKEN) > 0:
-        SLACK_USER_TOKEN = SLACKBOT_TOKEN
+        slack_user_token= SLACKBOT_TOKEN
 
-    slacker = SlackClient(SLACK_USER_TOKEN)
+    slacker = SlackClient(slack_user_token)
     resp = slacker.api_call('chat.postMessage', **kwargs)
     print resp
     return resp
-
 
 
 def __main__(**kwargs):
