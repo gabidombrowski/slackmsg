@@ -8,7 +8,7 @@ Options:
     -s, --as-slack-bot      Post as 'API Bot'.
 '''
 
-import os
+import os, sys
 
 from slackclient import SlackClient
 from docopt import docopt
@@ -32,25 +32,39 @@ def get_slack_bot(arguments):
     slack_bot = arguments['--as-slack-bot']
     return slack_bot
 
-def post_slack_message(**kwargs):
+
+def get_token(**kwargs):
     as_slack_bot = get_slack_bot(arguments)
 
     SLACK_TOKEN = os.environ.get('SLACK_TOKEN')
     SLACKBOT_TOKEN = os.environ.get('SLACKBOT_TOKEN')
 
-    if len(SLACK_TOKEN) == 0 and not as_slack_bot:
-        slack_user_token = raw_input(
-            'Your Slack token is missing.\nEnter your Slack token: ')
-        print(
-            '\nYou can also set the SLACK_TOKEN environment variable.')
-    elif len(SLACK_TOKEN) > 0 and not as_slack_bot:
+    if SLACK_TOKEN is None and not as_slack_bot:
+        try:
+            slack_user_token = raw_input(
+                'Your Slack token is missing.\nEnter your Slack token: ')
+            print(
+                '\nYou can also set the SLACK_TOKEN environment variable.')
+        except (KeyboardInterrupt):
+            print('\nKeyboark interrup detected. Exiting.')
+            sys.exit(0)
+    elif SLACK_TOKEN is not None and not as_slack_bot:
         slack_user_token = SLACK_TOKEN
-    elif as_slack_bot and len(SLACKBOT_TOKEN) == 0:
+    elif as_slack_bot and SLACKBOT_TOKEN is None:
         print('You are required to set the SLACKBOT_TOKEN environment variable.')
-    elif as_slack_bot and len(SLACKBOT_TOKEN) > 0:
+    elif as_slack_bot and SLACKBOT_TOKEN is not None:
         slack_user_token= SLACKBOT_TOKEN
 
-    slacker = SlackClient(slack_user_token)
+    try:
+        slacker = SlackClient(slack_user_token)
+        return slacker
+    except (Exception, KeyboardInterrupt):
+        sys.exit(0)
+
+def post_slack_message(**kwargs):
+
+    slacker = get_token()
+
     resp = slacker.api_call('chat.postMessage', **kwargs)
     print resp
     return resp
