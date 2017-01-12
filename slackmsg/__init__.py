@@ -8,7 +8,7 @@ Options:
     -s, --as-slack-bot      Post as 'API Bot'.
 '''
 
-import os, sys
+import os
 
 from slackclient import SlackClient
 from docopt import docopt
