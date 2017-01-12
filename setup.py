@@ -11,7 +11,7 @@ long_description = "Slack messaging CLI tool."
 
 setup(
     name='slackmsg',
-    version='0.1.1',
+    version='0.1.2',
     description='A SlackClient wrapper command line tool',
     long_description=long_description,
     url='https://github.com/pitchdiesel/slackmsg',
