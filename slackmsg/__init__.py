@@ -46,7 +46,7 @@ def get_token(**kwargs):
             print(
                 '\nYou can also set the SLACK_TOKEN environment variable.')
         except (KeyboardInterrupt):
-            print('\nKeyboark interrup detected. Exiting.')
+            print('\nKeyboard interrupt detected. Exiting.')
             sys.exit(0)
     elif SLACK_TOKEN is not None and not as_slack_bot:
         slack_user_token = SLACK_TOKEN
